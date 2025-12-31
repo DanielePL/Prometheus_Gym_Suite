@@ -31,24 +31,24 @@ interface PaymentDialogProps {
 }
 
 const PAYMENT_TYPES = [
-  { value: "membership", label: "Mitgliedsbeitrag" },
+  { value: "membership", label: "Membership" },
   { value: "personal_training", label: "Personal Training" },
-  { value: "class", label: "Kursbuchung" },
+  { value: "class", label: "Class Booking" },
   { value: "merchandise", label: "Merchandise" },
-  { value: "other", label: "Sonstiges" },
+  { value: "other", label: "Other" },
 ];
 
 const PAYMENT_STATUSES: { value: PaymentStatus; label: string }[] = [
-  { value: "pending", label: "Ausstehend" },
-  { value: "paid", label: "Bezahlt" },
-  { value: "overdue", label: "Überfällig" },
+  { value: "pending", label: "Pending" },
+  { value: "paid", label: "Paid" },
+  { value: "overdue", label: "Overdue" },
 ];
 
 const PAYMENT_METHODS = [
-  { value: "bank_transfer", label: "Überweisung" },
-  { value: "cash", label: "Bar" },
-  { value: "card", label: "Karte" },
-  { value: "direct_debit", label: "Lastschrift" },
+  { value: "bank_transfer", label: "Bank Transfer" },
+  { value: "cash", label: "Cash" },
+  { value: "card", label: "Card" },
+  { value: "direct_debit", label: "Direct Debit" },
   { value: "paypal", label: "PayPal" },
 ];
 
@@ -145,7 +145,7 @@ export default function PaymentDialog({
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>
-            {isEditing ? "Zahlung bearbeiten" : "Neue Zahlung"}
+            {isEditing ? "Edit Payment" : "New Payment"}
           </DialogTitle>
         </DialogHeader>
 
@@ -153,13 +153,13 @@ export default function PaymentDialog({
           <div className="grid grid-cols-2 gap-4">
             {/* Member */}
             <div className="col-span-2 space-y-2">
-              <Label>Mitglied *</Label>
+              <Label>Member *</Label>
               <Select
                 value={formData.member_id}
                 onValueChange={(v) => updateField("member_id", v)}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Mitglied wählen" />
+                  <SelectValue placeholder="Select member" />
                 </SelectTrigger>
                 <SelectContent>
                   {members.map((member) => (
@@ -173,7 +173,7 @@ export default function PaymentDialog({
 
             {/* Amount */}
             <div className="space-y-2">
-              <Label htmlFor="amount">Betrag (EUR) *</Label>
+              <Label htmlFor="amount">Amount (EUR) *</Label>
               <Input
                 id="amount"
                 type="number"
@@ -187,7 +187,7 @@ export default function PaymentDialog({
 
             {/* Payment Type */}
             <div className="space-y-2">
-              <Label>Zahlungsart *</Label>
+              <Label>Payment Type *</Label>
               <Select
                 value={formData.payment_type}
                 onValueChange={(v) => updateField("payment_type", v)}
@@ -207,7 +207,7 @@ export default function PaymentDialog({
 
             {/* Due Date */}
             <div className="space-y-2">
-              <Label htmlFor="due_date">Fälligkeitsdatum *</Label>
+              <Label htmlFor="due_date">Due Date *</Label>
               <Input
                 id="due_date"
                 type="date"
@@ -240,7 +240,7 @@ export default function PaymentDialog({
             {/* Paid Date (only show when status is paid) */}
             {formData.status === "paid" && (
               <div className="space-y-2">
-                <Label htmlFor="paid_date">Bezahlt am</Label>
+                <Label htmlFor="paid_date">Paid on</Label>
                 <Input
                   id="paid_date"
                   type="date"
@@ -253,13 +253,13 @@ export default function PaymentDialog({
             {/* Payment Method (only show when status is paid) */}
             {formData.status === "paid" && (
               <div className="space-y-2">
-                <Label>Zahlungsmethode</Label>
+                <Label>Payment Method</Label>
                 <Select
                   value={formData.payment_method}
                   onValueChange={(v) => updateField("payment_method", v)}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Wählen..." />
+                    <SelectValue placeholder="Select..." />
                   </SelectTrigger>
                   <SelectContent>
                     {PAYMENT_METHODS.map((method) => (
@@ -274,23 +274,23 @@ export default function PaymentDialog({
 
             {/* Invoice Number */}
             <div className="space-y-2">
-              <Label htmlFor="invoice_number">Rechnungsnummer</Label>
+              <Label htmlFor="invoice_number">Invoice Number</Label>
               <Input
                 id="invoice_number"
                 value={formData.invoice_number}
                 onChange={(e) => updateField("invoice_number", e.target.value)}
-                placeholder="z.B. INV-2024-001"
+                placeholder="e.g. INV-2024-001"
               />
             </div>
 
             {/* Description */}
             <div className="col-span-2 space-y-2">
-              <Label htmlFor="description">Beschreibung</Label>
+              <Label htmlFor="description">Description</Label>
               <textarea
                 id="description"
                 value={formData.description}
                 onChange={(e) => updateField("description", e.target.value)}
-                placeholder="Optionale Beschreibung..."
+                placeholder="Optional description..."
                 className="w-full min-h-[60px] px-3 py-2 rounded-md border border-input bg-background text-sm resize-none"
               />
             </div>
@@ -303,18 +303,18 @@ export default function PaymentDialog({
               onClick={() => onOpenChange(false)}
               disabled={loading}
             >
-              Abbrechen
+              Cancel
             </Button>
             <Button type="submit" disabled={loading || !formData.member_id}>
               {loading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Speichern...
+                  Saving...
                 </>
               ) : isEditing ? (
-                "Speichern"
+                "Save"
               ) : (
-                "Erstellen"
+                "Create"
               )}
             </Button>
           </DialogFooter>

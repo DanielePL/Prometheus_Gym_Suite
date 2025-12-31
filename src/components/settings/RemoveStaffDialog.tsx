@@ -30,15 +30,13 @@ export default function RemoveStaffDialog({
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Mitarbeiter entfernen?</AlertDialogTitle>
+          <AlertDialogTitle>Remove Staff Member?</AlertDialogTitle>
           <AlertDialogDescription>
-            Möchtest du <strong>{staff?.full_name || staff?.email}</strong> wirklich
-            aus dem Team entfernen? Der Account bleibt bestehen, aber der Zugang
-            zum Gym wird entzogen.
+            Do you really want to remove <strong>{staff?.full_name || staff?.email}</strong> from the team? The account will remain, but access to the gym will be revoked.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={loading}>Abbrechen</AlertDialogCancel>
+          <AlertDialogCancel disabled={loading}>Cancel</AlertDialogCancel>
           <AlertDialogAction
             onClick={onConfirm}
             disabled={loading}
@@ -47,10 +45,10 @@ export default function RemoveStaffDialog({
             {loading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Entfernen...
+                Removing...
               </>
             ) : (
-              "Entfernen"
+              "Remove"
             )}
           </AlertDialogAction>
         </AlertDialogFooter>

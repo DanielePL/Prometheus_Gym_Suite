@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { format, subMonths, startOfMonth, endOfMonth, eachDayOfInterval, parseISO } from "date-fns";
-import { de } from "date-fns/locale";
+import { enUS as locale } from "date-fns/locale";
 import {
   BarChart,
   Bar,
@@ -104,7 +104,7 @@ const AnalyticsReports = () => {
       const date = subMonths(new Date(), i);
       const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
       months.push({
-        month: format(date, "MMM", { locale: de }),
+        month: format(date, "MMM", { locale }),
         revenue: revenueByMonth[key] || 0,
       });
     }
@@ -122,7 +122,7 @@ const AnalyticsReports = () => {
       basic: "Basic",
       premium: "Premium",
       vip: "VIP",
-      trial: "Probe",
+      trial: "Trial",
     };
 
     return Object.entries(counts).map(([type, count]) => ({
@@ -134,9 +134,9 @@ const AnalyticsReports = () => {
   // Activity status distribution
   const activityData = useMemo(() => {
     return [
-      { name: "Aktiv", value: overview?.activeMembers || 0, color: CHART_COLORS.success },
-      { name: "Moderat", value: overview?.moderateMembers || 0, color: CHART_COLORS.warning },
-      { name: "Inaktiv", value: overview?.inactiveMembers || 0, color: CHART_COLORS.danger },
+      { name: "Active", value: overview?.activeMembers || 0, color: CHART_COLORS.success },
+      { name: "Moderate", value: overview?.moderateMembers || 0, color: CHART_COLORS.warning },
+      { name: "Inactive", value: overview?.inactiveMembers || 0, color: CHART_COLORS.danger },
     ].filter((d) => d.value > 0);
   }, [overview]);
 
@@ -165,45 +165,45 @@ const AnalyticsReports = () => {
 
     return [
       {
-        label: "Besuche gesamt",
-        value: totalVisits.toLocaleString("de-DE"),
+        label: "Total Visits",
+        value: totalVisits.toLocaleString("en-US"),
         change: "+12%",
-        period: "Dieser Monat",
+        period: "This Month",
         trend: "up",
       },
       {
-        label: "Aktive Mitglieder",
+        label: "Active Members",
         value: overview.activeMembers.toString(),
         change: `${Math.round((overview.activeMembers / Math.max(overview.totalMembers, 1)) * 100)}%`,
-        period: "Aktivitätsrate",
+        period: "Activity Rate",
         trend: "up",
       },
       {
-        label: "Spitzentag",
-        value: "Montag",
+        label: "Peak Day",
+        value: "Monday",
         change: weekdayData[0]?.visits.toString() || "0",
-        period: "Besuche",
+        period: "Visits",
         trend: "up",
       },
       {
-        label: "Spitzenzeit",
+        label: "Peak Time",
         value: peakHour.hour,
         change: peakHour.visits.toString(),
-        period: "Ø Besucher",
+        period: "Avg Visitors",
         trend: "up",
       },
       {
         label: "MRR",
-        value: `€${overview.mrr.toLocaleString("de-DE")}`,
+        value: `€${overview.mrr.toLocaleString("en-US")}`,
         change: growthMetrics?.growthRate ? `${growthMetrics.growthRate > 0 ? "+" : ""}${growthMetrics.growthRate}%` : "0%",
-        period: "Wachstum",
+        period: "Growth",
         trend: growthMetrics?.growthRate && growthMetrics.growthRate > 0 ? "up" : "down",
       },
     ];
   }, [overview, occupancyData, weekdayData, growthMetrics]);
 
   const exportMembersCSV = () => {
-    const headers = ["Name", "Email", "Typ", "Status", "Seit"];
+    const headers = ["Name", "Email", "Type", "Status", "Since"];
     const rows = members.map((m) => [
       m.name,
       m.email,
@@ -217,7 +217,7 @@ const AnalyticsReports = () => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `mitglieder-${format(new Date(), "yyyy-MM-dd")}.csv`;
+    a.download = `members-${format(new Date(), "yyyy-MM-dd")}.csv`;
     a.click();
   };
 
@@ -235,11 +235,11 @@ const AnalyticsReports = () => {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold">Analytics & Reports</h1>
-          <p className="text-muted-foreground">Einblicke, Trends und exportierbare Berichte</p>
+          <p className="text-muted-foreground">Insights, trends and exportable reports</p>
         </div>
         <Button variant="outline" onClick={exportMembersCSV}>
           <Download className="h-4 w-4 mr-2" />
-          Export Mitglieder
+          Export Members
         </Button>
       </div>
 
@@ -278,9 +278,9 @@ const AnalyticsReports = () => {
       {/* Tabs */}
       <Tabs defaultValue="occupancy" className="space-y-4">
         <TabsList className="backdrop-blur-md bg-card/80">
-          <TabsTrigger value="occupancy">Auslastung</TabsTrigger>
-          <TabsTrigger value="revenue">Umsatz</TabsTrigger>
-          <TabsTrigger value="members">Mitglieder</TabsTrigger>
+          <TabsTrigger value="occupancy">Occupancy</TabsTrigger>
+          <TabsTrigger value="revenue">Revenue</TabsTrigger>
+          <TabsTrigger value="members">Members</TabsTrigger>
           <TabsTrigger value="export">Export</TabsTrigger>
         </TabsList>
 
@@ -292,7 +292,7 @@ const AnalyticsReports = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <BarChart3 className="h-5 w-5 text-primary" />
-                  Tagesauslastung (Ø letzte 7 Tage)
+                  Daily Occupancy (Avg last 7 days)
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -311,7 +311,7 @@ const AnalyticsReports = () => {
                           border: "1px solid hsl(var(--border))",
                           borderRadius: "8px",
                         }}
-                        formatter={(value: number) => [`${value} Besucher`, "Durchschnitt"]}
+                        formatter={(value: number) => [`${value} visitors`, "Average"]}
                       />
                       <Bar dataKey="visits" fill={CHART_COLORS.primary} radius={[4, 4, 0, 0]} />
                     </BarChart>
@@ -325,7 +325,7 @@ const AnalyticsReports = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Clock className="h-5 w-5 text-primary" />
-                  Spitzenzeiten
+                  Peak Hours
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
@@ -334,7 +334,7 @@ const AnalyticsReports = () => {
                   .sort((a, b) => b.visits - a.visits)
                   .slice(0, 4)
                   .map((slot, idx) => {
-                    const level = idx === 0 ? "Sehr hoch" : idx === 1 ? "Hoch" : "Mittel";
+                    const level = idx === 0 ? "Very High" : idx === 1 ? "High" : "Medium";
                     const color =
                       idx === 0
                         ? "bg-red-500"
@@ -349,7 +349,7 @@ const AnalyticsReports = () => {
                         <span className="text-sm font-medium">{slot.hour}</span>
                         <div className="flex items-center gap-2">
                           <span className="text-xs text-muted-foreground">
-                            {slot.visits} Besucher
+                            {slot.visits} visitors
                           </span>
                           <Badge className={color}>{level}</Badge>
                         </div>
@@ -363,7 +363,7 @@ const AnalyticsReports = () => {
           {/* Weekday Distribution */}
           <Card className="backdrop-blur-md bg-card/80">
             <CardHeader>
-              <CardTitle>Wochentagsverteilung</CardTitle>
+              <CardTitle>Weekday Distribution</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="h-48">
@@ -381,7 +381,7 @@ const AnalyticsReports = () => {
                         border: "1px solid hsl(var(--border))",
                         borderRadius: "8px",
                       }}
-                      formatter={(value: number) => [`${value} Besuche`, "Durchschnitt"]}
+                      formatter={(value: number) => [`${value} visits`, "Average"]}
                     />
                     <Bar dataKey="visits" fill={CHART_COLORS.secondary} radius={[4, 4, 0, 0]} />
                   </BarChart>
@@ -399,7 +399,7 @@ const AnalyticsReports = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <TrendingUp className="h-5 w-5 text-primary" />
-                  Umsatzentwicklung (6 Monate)
+                  Revenue Trend (6 Months)
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -422,8 +422,8 @@ const AnalyticsReports = () => {
                           borderRadius: "8px",
                         }}
                         formatter={(value: number) => [
-                          `€${value.toLocaleString("de-DE")}`,
-                          "Umsatz",
+                          `€${value.toLocaleString("en-US")}`,
+                          "Revenue",
                         ]}
                       />
                       <Area
@@ -444,32 +444,32 @@ const AnalyticsReports = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <DollarSign className="h-5 w-5 text-primary" />
-                  Umsatz-Kennzahlen
+                  Revenue Metrics
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="p-4 rounded-lg bg-muted/50">
                     <p className="text-2xl font-bold text-primary">
-                      €{overview?.mrr.toLocaleString("de-DE") || 0}
+                      €{overview?.mrr.toLocaleString("en-US") || 0}
                     </p>
                     <p className="text-sm text-muted-foreground">MRR</p>
                   </div>
                   <div className="p-4 rounded-lg bg-muted/50">
                     <p className="text-2xl font-bold text-green-500">
-                      €{overview?.revenueThisMonth.toLocaleString("de-DE") || 0}
+                      €{overview?.revenueThisMonth.toLocaleString("en-US") || 0}
                     </p>
-                    <p className="text-sm text-muted-foreground">Diesen Monat</p>
+                    <p className="text-sm text-muted-foreground">This Month</p>
                   </div>
                   <div className="p-4 rounded-lg bg-muted/50">
                     <p className="text-2xl font-bold">{overview?.pendingPayments || 0}</p>
-                    <p className="text-sm text-muted-foreground">Ausstehend</p>
+                    <p className="text-sm text-muted-foreground">Pending</p>
                   </div>
                   <div className="p-4 rounded-lg bg-muted/50 border-l-4 border-l-destructive">
                     <p className="text-2xl font-bold text-destructive">
-                      €{overview?.overdueAmount.toLocaleString("de-DE") || 0}
+                      €{overview?.overdueAmount.toLocaleString("en-US") || 0}
                     </p>
-                    <p className="text-sm text-muted-foreground">Überfällig</p>
+                    <p className="text-sm text-muted-foreground">Overdue</p>
                   </div>
                 </div>
 
@@ -477,9 +477,9 @@ const AnalyticsReports = () => {
                   <div className="p-4 rounded-lg bg-primary/10 border border-primary/20">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="font-medium">Wachstum</p>
+                        <p className="font-medium">Growth</p>
                         <p className="text-sm text-muted-foreground">
-                          {growthMetrics.newMembersThisMonth} neue Mitglieder diesen Monat
+                          {growthMetrics.newMembersThisMonth} new members this month
                         </p>
                       </div>
                       <Badge
@@ -508,7 +508,7 @@ const AnalyticsReports = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <PieChartIcon className="h-5 w-5 text-primary" />
-                  Mitgliedschaftsverteilung
+                  Membership Distribution
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -541,8 +541,8 @@ const AnalyticsReports = () => {
                           borderRadius: "8px",
                         }}
                         formatter={(value: number) => [
-                          `${value} Mitglieder`,
-                          "Anzahl",
+                          `${value} members`,
+                          "Count",
                         ]}
                       />
                     </PieChart>
@@ -556,7 +556,7 @@ const AnalyticsReports = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Activity className="h-5 w-5 text-primary" />
-                  Aktivitätsstatus
+                  Activity Status
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -586,8 +586,8 @@ const AnalyticsReports = () => {
                           borderRadius: "8px",
                         }}
                         formatter={(value: number) => [
-                          `${value} Mitglieder`,
-                          "Anzahl",
+                          `${value} members`,
+                          "Count",
                         ]}
                       />
                     </PieChart>
@@ -608,7 +608,7 @@ const AnalyticsReports = () => {
                         <span className="text-sm font-medium">{item.name}</span>
                       </div>
                       <span className="text-sm text-muted-foreground">
-                        {item.value} Mitglieder
+                        {item.value} members
                       </span>
                     </div>
                   ))}
@@ -622,7 +622,7 @@ const AnalyticsReports = () => {
         <TabsContent value="export">
           <Card className="backdrop-blur-md bg-card/80">
             <CardHeader>
-              <CardTitle>Daten exportieren</CardTitle>
+              <CardTitle>Export Data</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid md:grid-cols-3 gap-4">
@@ -632,7 +632,7 @@ const AnalyticsReports = () => {
                   onClick={exportMembersCSV}
                 >
                   <Users className="h-8 w-8" />
-                  <span>Mitglieder CSV</span>
+                  <span>members CSV</span>
                 </Button>
                 <Button variant="outline" className="h-24 flex-col gap-2" disabled>
                   <BarChart3 className="h-8 w-8" />

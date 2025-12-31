@@ -56,7 +56,7 @@ export default function MessageComposer({
       if (replyTo) {
         setRecipientId(replyTo.sender?.id || "");
         setSubject(`Re: ${replyTo.subject}`);
-        setContent(`\n\n---\nAm ${new Date(replyTo.created_at).toLocaleDateString("de-DE")} schrieb ${replyTo.sender?.full_name || replyTo.sender?.email}:\n${replyTo.content}`);
+        setContent(`\n\n---\nOn ${new Date(replyTo.created_at).toLocaleDateString("en-US")} ${replyTo.sender?.full_name || replyTo.sender?.email} wrote:\n${replyTo.content}`);
         setIsBroadcast(false);
       } else {
         setRecipientId("");
@@ -84,7 +84,7 @@ export default function MessageComposer({
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>
-            {replyTo ? "Antworten" : "Neue Nachricht"}
+            {replyTo ? "Reply" : "New Message"}
           </DialogTitle>
         </DialogHeader>
 
@@ -99,12 +99,12 @@ export default function MessageComposer({
               )}
               <div>
                 <p className="font-medium">
-                  {isBroadcast ? "Team Broadcast" : "Einzelnachricht"}
+                  {isBroadcast ? "Team Broadcast" : "Direct Message"}
                 </p>
                 <p className="text-sm text-muted-foreground">
                   {isBroadcast
-                    ? "Nachricht geht an alle Teammitglieder"
-                    : "Nachricht an einen bestimmten Empfänger"}
+                    ? "Message will be sent to all team members"
+                    : "Message to a specific recipient"}
                 </p>
               </div>
             </div>
@@ -118,10 +118,10 @@ export default function MessageComposer({
           {/* Recipient (only for non-broadcast) */}
           {!isBroadcast && (
             <div className="space-y-2">
-              <Label>Empfänger *</Label>
+              <Label>Recipient *</Label>
               <Select value={recipientId} onValueChange={setRecipientId}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Empfänger wählen" />
+                  <SelectValue placeholder="Select recipient" />
                 </SelectTrigger>
                 <SelectContent>
                   {staff.map((member) => (
@@ -141,24 +141,24 @@ export default function MessageComposer({
 
           {/* Subject */}
           <div className="space-y-2">
-            <Label htmlFor="subject">Betreff *</Label>
+            <Label htmlFor="subject">Subject *</Label>
             <Input
               id="subject"
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
-              placeholder="Betreff der Nachricht"
+              placeholder="Message subject"
               required
             />
           </div>
 
           {/* Content */}
           <div className="space-y-2">
-            <Label htmlFor="content">Nachricht *</Label>
+            <Label htmlFor="content">Message *</Label>
             <textarea
               id="content"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="Deine Nachricht..."
+              placeholder="Your message..."
               className="w-full min-h-[200px] px-3 py-2 rounded-md border border-input bg-background text-sm resize-none"
               required
             />
@@ -171,18 +171,18 @@ export default function MessageComposer({
               onClick={() => onOpenChange(false)}
               disabled={loading}
             >
-              Abbrechen
+              Cancel
             </Button>
             <Button type="submit" disabled={loading || !isValid}>
               {loading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Senden...
+                  Sending...
                 </>
               ) : (
                 <>
                   <Send className="mr-2 h-4 w-4" />
-                  {isBroadcast ? "An Team senden" : "Senden"}
+                  {isBroadcast ? "Send to Team" : "Send"}
                 </>
               )}
             </Button>

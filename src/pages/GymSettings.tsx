@@ -40,11 +40,11 @@ import RemoveStaffDialog from "@/components/settings/RemoveStaffDialog";
 import type { Profile, StaffRole } from "@/types/database";
 
 const ROLE_LABELS: Record<StaffRole, string> = {
-  owner: "Inhaber",
+  owner: "Owner",
   admin: "Administrator",
   manager: "Manager",
   coach: "Coach",
-  receptionist: "Rezeption",
+  receptionist: "Receptionist",
 };
 
 const GymSettings = () => {
@@ -112,10 +112,10 @@ const GymSettings = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["gym", gymId] });
       setIsFormDirty(false);
-      toast.success("Gym-Profil aktualisiert");
+      toast.success("Gym profile updated");
     },
     onError: () => {
-      toast.error("Fehler beim Speichern");
+      toast.error("Error saving");
     },
   });
 
@@ -124,10 +124,10 @@ const GymSettings = () => {
     mutationFn: (file: File) => settingsService.uploadLogo(gymId!, file),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["gym", gymId] });
-      toast.success("Logo hochgeladen");
+      toast.success("Logo uploaded");
     },
     onError: () => {
-      toast.error("Fehler beim Hochladen");
+      toast.error("Error uploading");
     },
   });
 
@@ -138,10 +138,10 @@ const GymSettings = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["staff", gymId] });
       setEditingStaff(null);
-      toast.success("Mitarbeiter aktualisiert");
+      toast.success("Staff member updated");
     },
     onError: () => {
-      toast.error("Fehler beim Speichern");
+      toast.error("Error saving");
     },
   });
 
@@ -151,10 +151,10 @@ const GymSettings = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["staff", gymId] });
       setRemovingStaff(null);
-      toast.success("Mitarbeiter entfernt");
+      toast.success("Staff member removed");
     },
     onError: () => {
-      toast.error("Fehler beim Entfernen");
+      toast.error("Error removing");
     },
   });
 
@@ -180,7 +180,7 @@ const GymSettings = () => {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 2 * 1024 * 1024) {
-        toast.error("Datei ist zu gross (max. 2MB)");
+        toast.error("File is too large (max. 2MB)");
         return;
       }
       uploadLogoMutation.mutate(file);
@@ -188,9 +188,9 @@ const GymSettings = () => {
   };
 
   const integrations = [
-    { name: "Stripe", description: "Zahlungsabwicklung", connected: true, icon: CreditCard },
-    { name: "WhatsApp Business", description: "Mitglieder-Kommunikation", connected: false, icon: Link },
-    { name: "Google Calendar", description: "Kalender-Sync", connected: true, icon: Link },
+    { name: "Stripe", description: "Payment processing", connected: true, icon: CreditCard },
+    { name: "WhatsApp Business", description: "Member communication", connected: false, icon: Link },
+    { name: "Google Calendar", description: "Calendar sync", connected: true, icon: Link },
   ];
 
   if (loadingGym) {
@@ -206,19 +206,19 @@ const GymSettings = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold">Einstellungen</h1>
-          <p className="text-muted-foreground">Gym-Profil und Präferenzen verwalten</p>
+          <h1 className="text-2xl md:text-3xl font-bold">Settings</h1>
+          <p className="text-muted-foreground">Manage gym profile and preferences</p>
         </div>
       </div>
 
       {/* Tabs */}
       <Tabs defaultValue="profile" className="space-y-4">
         <TabsList className="glass flex-wrap">
-          <TabsTrigger value="profile">Profil</TabsTrigger>
+          <TabsTrigger value="profile">Profile</TabsTrigger>
           <TabsTrigger value="users">Team</TabsTrigger>
-          <TabsTrigger value="notifications">Benachrichtigungen</TabsTrigger>
-          <TabsTrigger value="integrations">Integrationen</TabsTrigger>
-          <TabsTrigger value="appearance">Darstellung</TabsTrigger>
+          <TabsTrigger value="notifications">Notifications</TabsTrigger>
+          <TabsTrigger value="integrations">Integrations</TabsTrigger>
+          <TabsTrigger value="appearance">Appearance</TabsTrigger>
         </TabsList>
 
         {/* Profile Tab */}
@@ -227,7 +227,7 @@ const GymSettings = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Building2 className="h-5 w-5 text-primary" />
-                Gym-Profil
+                Gym Profile
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -254,10 +254,10 @@ const GymSettings = () => {
                       ) : (
                         <Upload className="h-4 w-4 mr-2" />
                       )}
-                      Logo ändern
+                      Change Logo
                     </Button>
                     <p className="text-sm text-muted-foreground mt-2">
-                      Empfohlen: 256x256px, PNG oder JPG
+                      Recommended: 256x256px, PNG or JPG
                     </p>
                     <input
                       ref={fileInputRef}
@@ -296,7 +296,7 @@ const GymSettings = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="gymPhone">Telefon</Label>
+                    <Label htmlFor="gymPhone">Phone</Label>
                     <Input
                       id="gymPhone"
                       type="tel"
@@ -308,7 +308,7 @@ const GymSettings = () => {
                     />
                   </div>
                   <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="gymAddress">Adresse</Label>
+                    <Label htmlFor="gymAddress">Address</Label>
                     <Input
                       id="gymAddress"
                       value={gymAddress || gym?.address || ""}
@@ -327,12 +327,12 @@ const GymSettings = () => {
                   {updateGymMutation.isPending ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Speichern...
+                      Saving...
                     </>
                   ) : (
                     <>
                       <Save className="mr-2 h-4 w-4" />
-                      Änderungen speichern
+                      Save Changes
                     </>
                   )}
                 </Button>
@@ -347,7 +347,7 @@ const GymSettings = () => {
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="flex items-center gap-2">
                 <Users className="h-5 w-5 text-primary" />
-                Team-Mitglieder
+                Team Members
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -357,7 +357,7 @@ const GymSettings = () => {
                 </div>
               ) : staff.length === 0 ? (
                 <p className="text-center text-muted-foreground py-8">
-                  Keine Mitarbeiter gefunden
+                  No staff members found
                 </p>
               ) : (
                 <div className="space-y-3">
@@ -388,7 +388,7 @@ const GymSettings = () => {
                       <div className="flex items-center gap-3">
                         <Badge variant="outline">{ROLE_LABELS[member.role]}</Badge>
                         {member.id === user?.id && (
-                          <Badge variant="secondary">Du</Badge>
+                          <Badge variant="secondary">You</Badge>
                         )}
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
@@ -399,14 +399,14 @@ const GymSettings = () => {
                           <DropdownMenuContent align="end">
                             <DropdownMenuItem onClick={() => setEditingStaff(member)}>
                               <Pencil className="mr-2 h-4 w-4" />
-                              Bearbeiten
+                              Edit
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() => setRemovingStaff(member)}
                               className="text-destructive"
                             >
                               <UserMinus className="mr-2 h-4 w-4" />
-                              Entfernen
+                              Remove
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
@@ -422,39 +422,39 @@ const GymSettings = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Shield className="h-5 w-5 text-primary" />
-                Rollen-Berechtigungen
+                Role Permissions
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
                 <div className="p-3 rounded-lg bg-muted/50">
-                  <p className="font-medium">Inhaber</p>
+                  <p className="font-medium">Owner</p>
                   <p className="text-sm text-muted-foreground">
-                    Vollzugriff auf alle Funktionen, Einstellungen und Abrechnungen
+                    Full access to all features, settings, and billing
                   </p>
                 </div>
                 <div className="p-3 rounded-lg bg-muted/50">
                   <p className="font-medium">Administrator</p>
                   <p className="text-sm text-muted-foreground">
-                    Team verwalten, Einstellungen ändern, Berichte einsehen
+                    Manage team, change settings, view reports
                   </p>
                 </div>
                 <div className="p-3 rounded-lg bg-muted/50">
                   <p className="font-medium">Manager</p>
                   <p className="text-sm text-muted-foreground">
-                    Mitglieder und Coaches verwalten, Sessions planen
+                    Manage members and coaches, schedule sessions
                   </p>
                 </div>
                 <div className="p-3 rounded-lg bg-muted/50">
                   <p className="font-medium">Coach</p>
                   <p className="text-sm text-muted-foreground">
-                    Eigene Sessions und zugewiesene Mitglieder verwalten
+                    Manage own sessions and assigned members
                   </p>
                 </div>
                 <div className="p-3 rounded-lg bg-muted/50">
-                  <p className="font-medium">Rezeption</p>
+                  <p className="font-medium">Receptionist</p>
                   <p className="text-sm text-muted-foreground">
-                    Check-ins, Mitglieder-Stammdaten, Terminbuchungen
+                    Check-ins, member data, appointment bookings
                   </p>
                 </div>
               </div>
@@ -468,35 +468,35 @@ const GymSettings = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Bell className="h-5 w-5 text-primary" />
-                Benachrichtigungs-Einstellungen
+                Notification Settings
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               {[
                 {
                   key: "newMemberSignups",
-                  label: "Neue Mitglieder",
-                  description: "Benachrichtigung bei neuen Anmeldungen",
+                  label: "New Members",
+                  description: "Get notified when new members sign up",
                 },
                 {
                   key: "paymentAlerts",
-                  label: "Zahlungs-Alerts",
-                  description: "Benachrichtigungen zu Zahlungen und offenen Rechnungen",
+                  label: "Payment Alerts",
+                  description: "Notifications about payments and outstanding invoices",
                 },
                 {
                   key: "coachUpdates",
                   label: "Coach Updates",
-                  description: "Updates zu Coach-Zeitplänen und Verfügbarkeit",
+                  description: "Updates about coach schedules and availability",
                 },
                 {
                   key: "memberCheckins",
-                  label: "Mitglieder Check-ins",
-                  description: "Echtzeit Check-in Benachrichtigungen",
+                  label: "Member Check-ins",
+                  description: "Real-time check-in notifications",
                 },
                 {
                   key: "weeklyReports",
-                  label: "Wöchentliche Reports",
-                  description: "Wöchentliche Zusammenfassungs-Berichte erhalten",
+                  label: "Weekly Reports",
+                  description: "Receive weekly summary reports",
                 },
               ].map((notification) => (
                 <div key={notification.key} className="flex items-center justify-between">
@@ -523,7 +523,7 @@ const GymSettings = () => {
         <TabsContent value="integrations" className="space-y-4">
           <Card className="glass-card">
             <CardHeader>
-              <CardTitle>Verbundene Dienste</CardTitle>
+              <CardTitle>Connected Services</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {integrations.map((integration) => (
@@ -543,7 +543,7 @@ const GymSettings = () => {
                   <Button
                     variant={integration.connected ? "outline" : "default"}
                   >
-                    {integration.connected ? "Verbunden" : "Verbinden"}
+                    {integration.connected ? "Connected" : "Connect"}
                   </Button>
                 </div>
               ))}
@@ -567,14 +567,14 @@ const GymSettings = () => {
                   onClick={() => setTheme("light")}
                 >
                   <Sun className="h-4 w-4 mr-2" />
-                  Hell
+                  Light
                 </Button>
                 <Button
                   variant={theme === "dark" ? "default" : "outline"}
                   onClick={() => setTheme("dark")}
                 >
                   <Moon className="h-4 w-4 mr-2" />
-                  Dunkel
+                  Dark
                 </Button>
               </div>
             </CardContent>

@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { format, parseISO, isToday, isYesterday, formatDistanceToNow } from "date-fns";
-import { de } from "date-fns/locale";
+import { enUS as locale } from "date-fns/locale";
 import { useAuth } from "@/contexts/AuthContext";
 import { messagesService } from "@/services/messages";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -151,8 +151,8 @@ export default function Inbox() {
   const formatMessageDate = (dateStr: string) => {
     const date = parseISO(dateStr);
     if (isToday(date)) return format(date, "HH:mm");
-    if (isYesterday(date)) return "Gestern";
-    return format(date, "d. MMM", { locale: de });
+    if (isYesterday(date)) return "Yesterday";
+    return format(date, "MMM d", { locale });
   };
 
   const getInitials = (name: string | null | undefined) => {
@@ -182,8 +182,8 @@ export default function Inbox() {
             <h1 className="text-2xl md:text-3xl font-bold">Inbox</h1>
             <p className="text-muted-foreground">
               {unreadCount > 0
-                ? `${unreadCount} ungelesene Nachricht${unreadCount > 1 ? "en" : ""}`
-                : "Alle Nachrichten gelesen"}
+                ? `${unreadCount} unread message${unreadCount > 1 ? "s" : ""}`
+                : "All messages read"}
             </p>
           </div>
           <div className="flex gap-2">
@@ -194,12 +194,12 @@ export default function Inbox() {
                 disabled={markAllReadMutation.isPending}
               >
                 <CheckCheck className="h-4 w-4 mr-2" />
-                Alle gelesen
+                Mark all read
               </Button>
             )}
             <Button onClick={() => { setReplyTo(null); setComposerOpen(true); }}>
               <Plus className="h-4 w-4 mr-2" />
-              Neue Nachricht
+              New Message
             </Button>
           </div>
         </div>
@@ -212,7 +212,7 @@ export default function Inbox() {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Suchen..."
+                  placeholder="Search..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-9"
@@ -224,14 +224,14 @@ export default function Inbox() {
                 <TabsList className="w-full">
                   <TabsTrigger value="inbox" className="flex-1">
                     <Mail className="h-4 w-4 mr-2" />
-                    Eingang
+                    Inbox
                     {unreadCount > 0 && (
                       <Badge className="ml-2 bg-primary">{unreadCount}</Badge>
                     )}
                   </TabsTrigger>
                   <TabsTrigger value="sent" className="flex-1">
                     <Send className="h-4 w-4 mr-2" />
-                    Gesendet
+                    Sent
                   </TabsTrigger>
                 </TabsList>
               </div>
@@ -245,7 +245,7 @@ export default function Inbox() {
                       </div>
                     ) : filteredInbox.length === 0 ? (
                       <p className="text-center text-muted-foreground py-8">
-                        Keine Nachrichten
+                        No messages
                       </p>
                     ) : (
                       filteredInbox.map((message) => (
@@ -273,7 +273,7 @@ export default function Inbox() {
                       </div>
                     ) : filteredSent.length === 0 ? (
                       <p className="text-center text-muted-foreground py-8">
-                        Keine gesendeten Nachrichten
+                        No sent messages
                       </p>
                     ) : (
                       filteredSent.map((message) => (
@@ -331,17 +331,17 @@ export default function Inbox() {
                               Team Broadcast
                             </span>
                           ) : activeTab === "inbox" ? (
-                            `Von: ${selectedMessage.sender?.full_name || selectedMessage.sender?.email}`
+                            `From: ${selectedMessage.sender?.full_name || selectedMessage.sender?.email}`
                           ) : (
-                            `An: ${selectedMessage.recipient?.full_name || selectedMessage.recipient?.email || "Team"}`
+                            `To: ${selectedMessage.recipient?.full_name || selectedMessage.recipient?.email || "Team"}`
                           )}
                         </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="text-sm text-muted-foreground">
-                        {format(parseISO(selectedMessage.created_at), "d. MMMM yyyy, HH:mm", {
-                          locale: de,
+                        {format(parseISO(selectedMessage.created_at), "MMMM d, yyyy, HH:mm", {
+                          locale,
                         })}
                       </span>
                       <Button
@@ -364,7 +364,7 @@ export default function Inbox() {
                   <div className="p-4 border-t">
                     <Button onClick={() => handleReply(selectedMessage)}>
                       <Send className="h-4 w-4 mr-2" />
-                      Antworten
+                      Reply
                     </Button>
                   </div>
                 )}
@@ -373,9 +373,9 @@ export default function Inbox() {
               <div className="flex-1 flex items-center justify-center">
                 <div className="text-center">
                   <MailOpen className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-semibold">Keine Nachricht ausgewählt</h3>
+                  <h3 className="text-lg font-semibold">No message selected</h3>
                   <p className="text-muted-foreground">
-                    Wähle eine Nachricht aus der Liste aus
+                    Select a message from the list
                   </p>
                 </div>
               </div>
@@ -457,7 +457,7 @@ function MessageListItem({
             <span className={`text-sm truncate ${!message.is_read && showSender ? "font-semibold" : ""}`}>
               {message.is_broadcast
                 ? "Team Broadcast"
-                : person?.full_name || person?.email || "Unbekannt"}
+                : person?.full_name || person?.email || "Unknown"}
             </span>
             <span className="text-xs text-muted-foreground flex-shrink-0">
               {formatDate(message.created_at)}

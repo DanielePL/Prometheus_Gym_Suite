@@ -28,11 +28,11 @@ interface StaffDialogProps {
 }
 
 const ROLES: { value: StaffRole; label: string }[] = [
-  { value: "owner", label: "Inhaber" },
+  { value: "owner", label: "Owner" },
   { value: "admin", label: "Administrator" },
   { value: "manager", label: "Manager" },
   { value: "coach", label: "Coach" },
-  { value: "receptionist", label: "Rezeption" },
+  { value: "receptionist", label: "Receptionist" },
 ];
 
 export default function StaffDialog({
@@ -66,13 +66,13 @@ export default function StaffDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Mitarbeiter bearbeiten</DialogTitle>
+          <DialogTitle>Edit Staff Member</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Email (readonly) */}
           <div className="space-y-2">
-            <Label>E-Mail</Label>
+            <Label>Email</Label>
             <Input value={staff?.email || ""} disabled className="bg-muted" />
           </div>
 
@@ -83,14 +83,14 @@ export default function StaffDialog({
               id="fullName"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              placeholder="Vollständiger Name"
+              placeholder="Full Name"
               required
             />
           </div>
 
           {/* Role */}
           <div className="space-y-2">
-            <Label>Rolle *</Label>
+            <Label>Role *</Label>
             <Select value={role} onValueChange={(v) => setRole(v as StaffRole)}>
               <SelectTrigger>
                 <SelectValue />
@@ -112,18 +112,18 @@ export default function StaffDialog({
               onClick={() => onOpenChange(false)}
               disabled={loading}
             >
-              Abbrechen
+              Cancel
             </Button>
             <Button type="submit" disabled={loading || !isValid}>
               {loading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Speichern...
+                  Saving...
                 </>
               ) : (
                 <>
                   <Save className="mr-2 h-4 w-4" />
-                  Speichern
+                  Save
                 </>
               )}
             </Button>

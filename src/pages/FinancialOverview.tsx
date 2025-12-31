@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { format, parseISO, isToday, isYesterday, startOfMonth, startOfQuarter, startOfYear } from "date-fns";
-import { enUS } from "date-fns/locale";
+import { enUS as locale } from "date-fns/locale";
 import { useAuth } from "@/contexts/AuthContext";
 import { paymentsService } from "@/services/payments";
 import { membersService } from "@/services/members";
@@ -213,7 +213,7 @@ const FinancialOverview = () => {
     const date = parseISO(dateStr);
     if (isToday(date)) return "Today";
     if (isYesterday(date)) return "Yesterday";
-    return format(date, "MMM d", { locale: enUS });
+    return format(date, "MMM d", { locale });
   };
 
   const getStatusBadge = (status: string) => {
@@ -327,8 +327,8 @@ const FinancialOverview = () => {
               <DollarSign className="h-5 w-5 text-green-500" />
               <Badge variant="secondary" className="text-green-500">MTD</Badge>
             </div>
-            <p className="text-xl font-bold">€{stats.revenueMTD.toLocaleString("de-DE")}</p>
-            <p className="text-xs text-muted-foreground">Umsatz diesen Monat</p>
+            <p className="text-xl font-bold">€{stats.revenueMTD.toLocaleString("en-US")}</p>
+            <p className="text-xs text-muted-foreground">Revenue this month</p>
           </CardContent>
         </Card>
 
@@ -338,8 +338,8 @@ const FinancialOverview = () => {
               <TrendingUp className="h-5 w-5 text-green-500" />
               <Badge variant="secondary" className="text-green-500">QTD</Badge>
             </div>
-            <p className="text-xl font-bold">€{stats.revenueQTD.toLocaleString("de-DE")}</p>
-            <p className="text-xs text-muted-foreground">Umsatz Quartal</p>
+            <p className="text-xl font-bold">€{stats.revenueQTD.toLocaleString("en-US")}</p>
+            <p className="text-xs text-muted-foreground">Revenue QTD</p>
           </CardContent>
         </Card>
 
@@ -349,8 +349,8 @@ const FinancialOverview = () => {
               <Calendar className="h-5 w-5 text-green-500" />
               <Badge variant="secondary" className="text-green-500">YTD</Badge>
             </div>
-            <p className="text-xl font-bold">€{stats.revenueYTD.toLocaleString("de-DE")}</p>
-            <p className="text-xs text-muted-foreground">Umsatz Jahr</p>
+            <p className="text-xl font-bold">€{stats.revenueYTD.toLocaleString("en-US")}</p>
+            <p className="text-xs text-muted-foreground">Revenue YTD</p>
           </CardContent>
         </Card>
 
@@ -360,8 +360,8 @@ const FinancialOverview = () => {
               <Clock className="h-5 w-5 text-yellow-500" />
               <Badge variant="secondary">{stats.pendingCount}</Badge>
             </div>
-            <p className="text-xl font-bold">€{stats.pendingAmount.toLocaleString("de-DE")}</p>
-            <p className="text-xs text-muted-foreground">Ausstehend</p>
+            <p className="text-xl font-bold">€{stats.pendingAmount.toLocaleString("en-US")}</p>
+            <p className="text-xs text-muted-foreground">Pending</p>
           </CardContent>
         </Card>
 
@@ -371,8 +371,8 @@ const FinancialOverview = () => {
               <AlertTriangle className="h-5 w-5 text-destructive" />
               <Badge variant="destructive">{stats.overdueCount}</Badge>
             </div>
-            <p className="text-xl font-bold">€{stats.overdueAmount.toLocaleString("de-DE")}</p>
-            <p className="text-xs text-muted-foreground">Überfällig</p>
+            <p className="text-xl font-bold">€{stats.overdueAmount.toLocaleString("en-US")}</p>
+            <p className="text-xs text-muted-foreground">Overdue</p>
           </CardContent>
         </Card>
       </div>
@@ -382,17 +382,17 @@ const FinancialOverview = () => {
         {/* Revenue by Source */}
         <Card className="backdrop-blur-md bg-card/80">
           <CardHeader>
-            <CardTitle>Umsatz nach Kategorie</CardTitle>
+            <CardTitle>Revenue by Category</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {revenueByType.length === 0 ? (
-              <p className="text-muted-foreground text-center py-4">Noch keine Daten</p>
+              <p className="text-muted-foreground text-center py-4">No data yet</p>
             ) : (
               revenueByType.map((item) => (
                 <div key={item.type} className="space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="font-medium">{item.label}</span>
-                    <span className="text-muted-foreground">€{item.amount.toLocaleString("de-DE")}</span>
+                    <span className="text-muted-foreground">€{item.amount.toLocaleString("en-US")}</span>
                   </div>
                   <Progress value={item.percentage} className="h-2" />
                 </div>
@@ -406,12 +406,12 @@ const FinancialOverview = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Users className="h-5 w-5 text-primary" />
-              Umsatz nach Coach
+              Revenue by Coach
             </CardTitle>
           </CardHeader>
           <CardContent>
             {coachRevenue.length === 0 ? (
-              <p className="text-muted-foreground text-center py-4">Noch keine Daten</p>
+              <p className="text-muted-foreground text-center py-4">No data yet</p>
             ) : (
               <div className="space-y-3">
                 {coachRevenue.map((coach) => (
@@ -430,10 +430,10 @@ const FinancialOverview = () => {
                       </div>
                       <div>
                         <p className="font-medium">{coach.name}</p>
-                        <p className="text-sm text-muted-foreground">{coach.client_count} Klienten</p>
+                        <p className="text-sm text-muted-foreground">{coach.client_count} clients</p>
                       </div>
                     </div>
-                    <p className="font-bold text-primary">€{coach.revenue_this_month.toLocaleString("de-DE")}</p>
+                    <p className="font-bold text-primary">€{coach.revenue_this_month.toLocaleString("en-US")}</p>
                   </div>
                 ))}
               </div>
@@ -448,18 +448,18 @@ const FinancialOverview = () => {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <CardTitle className="flex items-center gap-2">
               <CreditCard className="h-5 w-5 text-primary" />
-              Zahlungen
+              Payments
             </CardTitle>
             <Tabs value={activeTab} onValueChange={setActiveTab}>
               <TabsList>
-                <TabsTrigger value="all">Alle</TabsTrigger>
+                <TabsTrigger value="all">All</TabsTrigger>
                 <TabsTrigger value="pending">
-                  Ausstehend ({stats.pendingCount})
+                  Pending ({stats.pendingCount})
                 </TabsTrigger>
                 <TabsTrigger value="overdue">
-                  Überfällig ({stats.overdueCount})
+                  Overdue ({stats.overdueCount})
                 </TabsTrigger>
-                <TabsTrigger value="paid">Bezahlt</TabsTrigger>
+                <TabsTrigger value="paid">Paid</TabsTrigger>
               </TabsList>
             </Tabs>
           </div>
@@ -470,24 +470,24 @@ const FinancialOverview = () => {
               <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
             </div>
           ) : filteredPayments.length === 0 ? (
-            <p className="text-muted-foreground text-center py-8">Keine Zahlungen gefunden</p>
+            <p className="text-muted-foreground text-center py-8">No payments found</p>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Mitglied</TableHead>
-                  <TableHead>Typ</TableHead>
-                  <TableHead>Betrag</TableHead>
-                  <TableHead>Fällig</TableHead>
+                  <TableHead>Member</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Amount</TableHead>
+                  <TableHead>Due</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Aktionen</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredPayments.slice(0, 20).map((payment) => (
                   <TableRow key={payment.id}>
                     <TableCell className="font-medium">
-                      {payment.member?.name || "Unbekannt"}
+                      {payment.member?.name || "Unknown"}
                     </TableCell>
                     <TableCell>
                       <Badge variant="outline">{getPaymentTypeLabel(payment.payment_type)}</Badge>
@@ -510,19 +510,19 @@ const FinancialOverview = () => {
                           {payment.status !== "paid" && (
                             <DropdownMenuItem onClick={() => handleMarkPaid(payment)}>
                               <CheckCircle className="mr-2 h-4 w-4 text-green-500" />
-                              Als bezahlt markieren
+                              Mark as paid
                             </DropdownMenuItem>
                           )}
                           <DropdownMenuItem onClick={() => handleEdit(payment)}>
                             <Edit className="mr-2 h-4 w-4" />
-                            Bearbeiten
+                            Edit
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() => handleDelete(payment.id)}
                             className="text-destructive"
                           >
                             <Trash2 className="mr-2 h-4 w-4" />
-                            Löschen
+                            Delete
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -543,15 +543,15 @@ const FinancialOverview = () => {
               <div className="flex items-center gap-3">
                 <AlertTriangle className="h-6 w-6 text-destructive" />
                 <div>
-                  <p className="font-semibold">{stats.overdueCount} überfällige Zahlungen</p>
+                  <p className="font-semibold">{stats.overdueCount} overdue payments</p>
                   <p className="text-sm text-muted-foreground">
-                    Gesamt: €{stats.overdueAmount.toLocaleString("de-DE")} ausstehend
+                    Total: €{stats.overdueAmount.toLocaleString("en-US")} outstanding
                   </p>
                 </div>
               </div>
               <Button variant="destructive">
                 <Mail className="mr-2 h-4 w-4" />
-                Erinnerungen senden
+                Send reminders
               </Button>
             </div>
           </CardContent>
